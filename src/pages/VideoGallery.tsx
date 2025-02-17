@@ -53,9 +53,9 @@ const VideoGallery = () => {
     };
   }, [roomName]);
 
-  const toggleAudio = () => {
+  const toggleAudio = (on: boolean) => {
     audioElements.current.forEach(audio => {
-      if (audio.paused) {
+      if (on) {
         audio.play();
       } else {
         audio.pause();
@@ -143,7 +143,7 @@ const VideoGallery = () => {
       if (isPlaying && videoRef.current) {
         try {
 
-          toggleAudio();
+          toggleAudio(true);
 
           const mediaStream = videoRef.current.captureStream();
           const videoTrack = mediaStream.getVideoTracks()[0];
@@ -180,8 +180,8 @@ const VideoGallery = () => {
         for (const publication of publishedTracksRef.current) {
           try {
             console.log('Attempting to unpublish track with SID:', publication.trackSid);
-            if (publication.track.kind === 'audio') {
-              toggleAudio();
+            if (publication.track?.kind === 'audio') {
+              toggleAudio(false);
             }
             await roomRef.current.localParticipant.unpublishTrack(publication.track);
           } catch (error) {
