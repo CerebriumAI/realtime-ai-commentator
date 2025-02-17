@@ -131,11 +131,14 @@ const VideoGallery = () => {
           publishedTracksRef.current.push(publishedVideo);
         }
         if (audioTrack) {
+          console.log('publishing audio track');
           const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
             source: Track.Source.Unknown,
             stopMicTrackOnMute: true,
           });
           publishedTracksRef.current.push(publishedAudio);
+        } else {
+          console.warn('No audio track found in the media stream');
         }
       } catch (error) {
         console.error('Error publishing video:', error);
@@ -175,7 +178,7 @@ const VideoGallery = () => {
             ref={videoRef}
             key={selectedVideo.url}
             controls
-            muted
+            // muted
             className="w-full h-full object-contain"
             poster={selectedVideo.thumbnail}
             onPlay={handleVideoPlay}
