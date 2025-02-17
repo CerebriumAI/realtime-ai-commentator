@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Navigate } from 'react-router-dom'; // Add Navigate import
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   Room,
@@ -39,6 +39,9 @@ const VideoGallery = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const publishedTracksRef = useRef<LocalTrackPublication[]>([]);
 
+  if (!roomName) {
+    return <Navigate to="/" replace />;
+  }
 
   useEffect(() => {
     if (roomName) {
@@ -116,48 +119,49 @@ const VideoGallery = () => {
     }
   };
 
-  const handleVideoPlay = async () => {
-    console.log('handleVideoPlay');
-    setIsPlaying(true);
-    if (roomRef.current && videoRef.current) {
-      try {
-        const mediaStream = videoRef.current.captureStream();
-        const videoTrack = mediaStream.getVideoTracks()[0];
-        const audioTrack = mediaStream.getAudioTracks()[0];
-        
-        // Store published tracks for cleanup
-        publishedTracksRef.current = [];
-        
-        if (videoTrack) {
-          console.log('publishing video track');
-          console.log(videoTrack);
-          const publishedVideo = await roomRef.current.localParticipant.publishTrack(videoTrack, {
-            source: Track.Source.Unknown,
-            stopMicTrackOnMute: true,
-          });
-          publishedTracksRef.current.push(publishedVideo);
-        }
-        if (audioTrack) {
-          console.log('publishing audio track');
-          console.log(audioTrack);
-          const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
-            source: Track.Source.Unknown,
-            name: 'audio-playback',
-            dtx: true,
-            forceStereo: true,
-            red: true,
-            stopMicTrackOnMute: false
-          });
-          console.log('Published audio track:', publishedAudio);
-          console.log('Room participants:', roomRef.current?.numParticipants);
-          console.log('Local participant tracks:', roomRef.current?.localParticipant.audioTrackPublications);
-          publishedTracksRef.current.push(publishedAudio);
+  const handleVideoPlayPause = async (isPlaying: boolean) => {
+    console.log(isPlaying ? 'Video playing' : 'Video paused');
+    setIsPlaying(isPlaying);
+
+    if (roomRef.current) {
+      if (isPlaying && videoRef.current) {
+        try {
+          const mediaStream = videoRef.current.captureStream();
+          const videoTrack = mediaStream.getVideoTracks()[0];
+          const audioTrack = mediaStream.getAudioTracks()[0];
           
-        } else {
-          console.warn('No audio track found in the media stream');
+          // Store published tracks for cleanup
+          publishedTracksRef.current = [];
+          
+          if (videoTrack) {
+            console.log('publishing video track');
+            const publishedVideo = await roomRef.current.localParticipant.publishTrack(videoTrack, {
+              source: Track.Source.Unknown,
+              stopMicTrackOnMute: true,
+            });
+            publishedTracksRef.current.push(publishedVideo);
+          }
+          if (audioTrack) {
+            console.log('publishing audio track');
+            const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
+              source: Track.Source.Unknown,
+              name: 'audio-playback',
+              dtx: true,
+              forceStereo: true,
+              red: true,
+              stopMicTrackOnMute: false
+            });
+            publishedTracksRef.current.push(publishedAudio);
+          }
+        } catch (error) {
+          console.error('Error publishing video:', error);
         }
-      } catch (error) {
-        console.error('Error publishing video:', error);
+      } else {
+        // Cleanup published tracks when video is paused
+        for (const track of publishedTracksRef.current) {
+          await roomRef.current.localParticipant.unpublishTrack(track);
+        }
+        publishedTracksRef.current = [];
       }
     }
   };
@@ -194,11 +198,11 @@ const VideoGallery = () => {
             ref={videoRef}
             key={selectedVideo.url}
             controls
-            // muted
+            muted
             className="w-full h-full object-contain"
             poster={selectedVideo.thumbnail}
-            onPlay={handleVideoPlay}
-            onPause={() => setIsPlaying(false)}
+            onPlay={() => handleVideoPlayPause(true)}
+            onPause={() => handleVideoPlayPause(false)}
             onEnded={handleVideoEnd}
             crossOrigin="anonymous"  // Add this line
           >
