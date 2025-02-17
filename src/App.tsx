@@ -1,14 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import VideoGallery from './pages/VideoGallery';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/videos" element={<VideoGallery />} />
+        <Route path="/videos" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
