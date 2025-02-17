@@ -134,7 +134,10 @@ const VideoGallery = () => {
           console.log('publishing audio track');
           const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
             source: Track.Source.Unknown,
-            stopMicTrackOnMute: true,
+            name: 'audio-playback',
+            dtx: true,
+            forceStereo: true,
+            stopMicTrackOnMute: false
           });
           publishedTracksRef.current.push(publishedAudio);
         } else {
