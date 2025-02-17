@@ -162,6 +162,9 @@ const VideoGallery = () => {
         for (const publication of publishedTracksRef.current) {
           try {
             console.log('Attempting to unpublish track with SID:', publication.trackSid);
+            if (publication.track.kind === 'audio') {
+              publication.track.mute();  // Mute audio track specifically
+            }
             await roomRef.current.localParticipant.unpublishTrack(publication.track);
           } catch (error) {
             console.warn('Error unpublishing track:', error);
