@@ -116,7 +116,7 @@ const VideoGallery = () => {
       try {
         const mediaStream = videoRef.current.captureStream();
         const videoTrack = mediaStream.getVideoTracks()[0];
-        // const audioTrack = mediaStream.getAudioTracks()[0];
+        const audioTrack = mediaStream.getAudioTracks()[0];
         
         // Store published tracks for cleanup
         publishedTracksRef.current = [];
@@ -130,13 +130,13 @@ const VideoGallery = () => {
           });
           publishedTracksRef.current.push(publishedVideo);
         }
-        // if (audioTrack) {
-        //   const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
-        //     source: Track.Source.,
-        //     stopMicTrackOnMute: true,
-        //   });
-        //   publishedTracksRef.current.push(publishedAudio);
-        // }
+        if (audioTrack) {
+          const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
+            source: Track.Source.Unknown,
+            stopMicTrackOnMute: true,
+          });
+          publishedTracksRef.current.push(publishedAudio);
+        }
       } catch (error) {
         console.error('Error publishing video:', error);
       }
@@ -175,6 +175,7 @@ const VideoGallery = () => {
             ref={videoRef}
             key={selectedVideo.url}
             controls
+            muted
             className="w-full h-full object-contain"
             poster={selectedVideo.thumbnail}
             onPlay={handleVideoPlay}
