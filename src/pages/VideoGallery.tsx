@@ -163,7 +163,9 @@ const VideoGallery = () => {
           try {
             console.log('Attempting to unpublish track with SID:', publication.trackSid);
             if (publication.track.kind === 'audio') {
-              publication.track.mute();  // Mute audio track specifically
+              const mediaStreamTrack = publication.track.mediaStreamTrack;
+              mediaStreamTrack.enabled = false;  // Immediately disable the track
+              mediaStreamTrack.stop();  // Stop the track completely
             }
             await roomRef.current.localParticipant.unpublishTrack(publication.track);
           } catch (error) {
