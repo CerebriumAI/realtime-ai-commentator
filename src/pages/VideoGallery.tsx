@@ -163,6 +163,7 @@ const VideoGallery = () => {
           try {
               console.log(track);
               await roomRef.current.localParticipant.unpublishTrack(track);
+              await roomRef.current.localParticipant.unpublishTrack(track[0]);
           } catch (error) {
             console.warn('Error unpublishing track:', error);
           }
