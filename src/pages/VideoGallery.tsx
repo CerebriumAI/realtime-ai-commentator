@@ -132,11 +132,13 @@ const VideoGallery = () => {
         }
         if (audioTrack) {
           console.log('publishing audio track');
+          console.log(audioTrack);
           const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
             source: Track.Source.Unknown,
             name: 'audio-playback',
             dtx: true,
             forceStereo: true,
+            red: true,
             stopMicTrackOnMute: false
           });
           publishedTracksRef.current.push(publishedAudio);
