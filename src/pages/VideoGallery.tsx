@@ -158,8 +158,15 @@ const VideoGallery = () => {
         }
       } else {
         // Cleanup published tracks when video is paused
+        console.log(roomRef.current?.localParticipant.trackPublications);
         for (const track of publishedTracksRef.current) {
-          await roomRef.current.localParticipant.unpublishTrack(track);
+          try {
+            if (roomRef.current?.localParticipant.trackPublications.has(track.trackSid)) {
+              await roomRef.current.localParticipant.unpublishTrack(track);
+            }
+          } catch (error) {
+            console.warn('Error unpublishing track:', error);
+          }
         }
         publishedTracksRef.current = [];
       }
