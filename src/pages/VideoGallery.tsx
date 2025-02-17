@@ -142,8 +142,9 @@ const VideoGallery = () => {
             stopMicTrackOnMute: false
           });
           console.log('Published audio track:', publishedAudio);
-          console.log('Room participants:', roomRef.current?.participants);
-          console.log('Local participant tracks:', roomRef.current?.localParticipant.tracks);
+          console.log('Audio can be played:', roomRef.current?.canPlaybackAudio);
+          console.log('Room participants:', roomRef.current?.numParticipants);
+          console.log('Local participant tracks:', roomRef.current?.localParticipant.audioTrackPublications);
           publishedTracksRef.current.push(publishedAudio);
           
         } else {
