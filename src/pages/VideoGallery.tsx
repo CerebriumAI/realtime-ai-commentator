@@ -60,6 +60,13 @@ const VideoGallery = () => {
       maxRetries: 3,
     });
 
+    room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+      console.log('Track subscribed:', track.kind);
+      if (track.kind === 'audio') {
+        track.attach();  
+      }
+    });
+
     try {
 
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -142,7 +149,6 @@ const VideoGallery = () => {
             stopMicTrackOnMute: false
           });
           console.log('Published audio track:', publishedAudio);
-          console.log('Audio can be played:', roomRef.current?.canPlaybackAudio);
           console.log('Room participants:', roomRef.current?.numParticipants);
           console.log('Local participant tracks:', roomRef.current?.localParticipant.audioTrackPublications);
           publishedTracksRef.current.push(publishedAudio);
