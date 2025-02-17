@@ -37,6 +37,7 @@ const VideoGallery = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const roomRef = useRef<Room | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioElements = useRef<HTMLAudioElement[]>([]);
   const publishedTracksRef = useRef<LocalTrackPublication[]>([]);
 
   if (!roomName) {
@@ -52,6 +53,15 @@ const VideoGallery = () => {
     };
   }, [roomName]);
 
+  const cleanupAudio = () => {
+    audioElements.current.forEach(audio => {
+      audio.pause();
+      audio.srcObject = null;
+      audio.remove();
+    });
+    audioElements.current = [];
+  };
+
   const initializeRoom = async () => {
     const room = new Room({
       adaptiveStream: true,
@@ -66,9 +76,14 @@ const VideoGallery = () => {
     room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
       console.log('Track subscribed:', track.kind);
       if (track.kind === 'audio') {
-        track.attach();  
+        const audioElement = track.attach();
+        audioElement.volume = 1.0;  // Ensure volume is up
+        
+        // Store the audio element so we can control it later
+        audioElements.current.push(audioElement);
       }
     });
+    
 
     try {
 
@@ -163,9 +178,7 @@ const VideoGallery = () => {
           try {
             console.log('Attempting to unpublish track with SID:', publication.trackSid);
             if (publication.track.kind === 'audio') {
-              const mediaStreamTrack = publication.track.mediaStreamTrack;
-              mediaStreamTrack.enabled = false;  // Immediately disable the track
-              mediaStreamTrack.stop();  // Stop the track completely
+              cleanupAudio();
             }
             await roomRef.current.localParticipant.unpublishTrack(publication.track);
           } catch (error) {
