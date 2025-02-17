@@ -159,7 +159,7 @@ const VideoGallery = () => {
       } else {
         // Cleanup published tracks when video is paused
         console.log(roomRef.current?.localParticipant.trackPublications);
-        for (const track of roomRef.current?.localParticipant.trackPublications) {
+        for (const track of roomRef.current?.localParticipant.audioTrackPublications) {
           try {
               console.log(track);
               await roomRef.current.localParticipant.unpublishTrack(track);
