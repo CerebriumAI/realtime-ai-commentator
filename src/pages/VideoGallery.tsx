@@ -144,7 +144,16 @@ const VideoGallery = () => {
           const mediaStream = videoRef.current.captureStream();
           const videoTrack = mediaStream.getVideoTracks()[0];
           const audioTrack = mediaStream.getAudioTracks()[0];
-          
+
+          roomRef.current.participants.forEach(participant => {
+            participant.audioTracks.forEach(publication => {
+              if (publication.track) {
+                const audioElement = publication.track.attach();
+                audioElement.volume = 1.0;
+                audioElements.current.push(audioElement);
+              }
+            });
+          });        
           // Store published tracks for cleanup
           publishedTracksRef.current = [];
           
