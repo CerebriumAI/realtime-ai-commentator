@@ -53,13 +53,14 @@ const VideoGallery = () => {
     };
   }, [roomName]);
 
-  const cleanupAudio = () => {
+  const toggleAudio = () => {
     audioElements.current.forEach(audio => {
-      audio.pause();
-      audio.srcObject = null;
-      audio.remove();
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
     });
-    audioElements.current = [];
   };
 
   const initializeRoom = async () => {
@@ -141,19 +142,12 @@ const VideoGallery = () => {
     if (roomRef.current) {
       if (isPlaying && videoRef.current) {
         try {
+
+          toggleAudio();
+
           const mediaStream = videoRef.current.captureStream();
           const videoTrack = mediaStream.getVideoTracks()[0];
           const audioTrack = mediaStream.getAudioTracks()[0];
-
-          roomRef.current.participants.forEach(participant => {
-            participant.audioTracks.forEach(publication => {
-              if (publication.track) {
-                const audioElement = publication.track.attach();
-                audioElement.volume = 1.0;
-                audioElements.current.push(audioElement);
-              }
-            });
-          });        
           // Store published tracks for cleanup
           publishedTracksRef.current = [];
           
@@ -167,15 +161,15 @@ const VideoGallery = () => {
           }
           if (audioTrack) {
             console.log('publishing audio track');
-            const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
-              source: Track.Source.Unknown,
-              name: 'audio-playback',
-              dtx: true,
-              forceStereo: true,
-              red: true,
-              stopMicTrackOnMute: false
-            });
-            publishedTracksRef.current.push(publishedAudio);
+            // const publishedAudio = await roomRef.current.localParticipant.publishTrack(audioTrack, {
+            //   source: Track.Source.Unknown,
+            //   name: 'audio-playback',
+            //   dtx: true,
+            //   forceStereo: true,
+            //   red: true,
+            //   stopMicTrackOnMute: false
+            // });
+            // publishedTracksRef.current.push(publishedAudio);
           }
         } catch (error) {
           console.error('Error publishing video:', error);
@@ -187,7 +181,7 @@ const VideoGallery = () => {
           try {
             console.log('Attempting to unpublish track with SID:', publication.trackSid);
             if (publication.track.kind === 'audio') {
-              cleanupAudio();
+              toggleAudio();
             }
             await roomRef.current.localParticipant.unpublishTrack(publication.track);
           } catch (error) {
