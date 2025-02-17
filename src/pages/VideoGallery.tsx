@@ -141,7 +141,11 @@ const VideoGallery = () => {
             red: true,
             stopMicTrackOnMute: false
           });
+          console.log('Published audio track:', publishedAudio);
+          console.log('Room participants:', roomRef.current?.participants);
+          console.log('Local participant tracks:', roomRef.current?.localParticipant.tracks);
           publishedTracksRef.current.push(publishedAudio);
+          
         } else {
           console.warn('No audio track found in the media stream');
         }
