@@ -25,18 +25,16 @@ const videos = [
 ];
 
 const VideoGallery = () => {
-  const location = useLocation();
-  const roomName = location.state?.roomName;
   const [selectedVideo, setSelectedVideo] = useState(videos[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const roomRef = useRef<Room | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioElements = useRef<HTMLAudioElement[]>([]);
   const publishedTracksRef = useRef<LocalTrackPublication[]>([]);
+  const [roomName, setRoomName] = useState(() => 
+    `${selectedVideo.id === 1 ? 'movie' : 'basketball'}-${Math.random().toString(36).substring(2, 10)}`
+  );
 
-  if (!roomName) {
-    return <Navigate to="/" replace />;
-  }
 
   useEffect(() => {
     if (roomName) {
@@ -45,7 +43,7 @@ const VideoGallery = () => {
     return () => {
       roomRef.current?.disconnect();
     };
-  }, [roomName]);
+  }, [roomName, selectedVideo]);
 
   const toggleAudio = (on: boolean) => {
     audioElements.current.forEach(audio => {
@@ -199,7 +197,18 @@ const VideoGallery = () => {
     }
   };
 
-  const handleVideoSelect = (video: typeof videos[0]) => {
+  const handleVideoSelect = async (video: typeof videos[0]) => {
+
+    if (roomRef.current) {
+      await roomRef.current.disconnect();
+      roomRef.current = null;
+    }
+
+    audioElements.current = [];
+    publishedTracksRef.current = [];
+
+    const newRoomName = `${video.id === 1 ? 'movie' : 'basketball'}-${Math.random().toString(36).substring(2, 10)}`;
+    setRoomName(newRoomName);
     setSelectedVideo(video);
     setIsPlaying(false);
   };

@@ -11,10 +11,9 @@ const LandingPage = () => {
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-5xl font-bold mb-6">Realtime AI commentator</h1>
-              <p className="text-xl mb-8">See how a model can comment on videos in realtime with emotion</p>
+              <p className="text-xl mb-8">See how a AI Model can commentate on videos in realtime with emotion</p>
               <Link
                 to="/videos"
-                state={{ roomName: `room-${Math.random().toString(36).substring(2, 10)}` }}
                 className="inline-flex items-center px-6 py-3 bg-white text-[#EB3A6F] rounded-full font-semibold hover:bg-opacity-90 transition-colors"
               >
                 <Play className="w-5 h-5 mr-2" />
@@ -26,18 +25,29 @@ const LandingPage = () => {
         </div>
 
         {/* Features Section */}
-        <div className="py-20 bg-gray-50">
+        <div className="py-10 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto">
+              <div className="flex justify-center gap-2 mb-12">
+                <div className="bg-white rounded-full px-10 py-4 shadow-md flex items-center gap-6">
+                  <a href="https://livekit.io/kitt" target="_blank" rel="noopener noreferrer">
+                    <img src="/assets/livekit-logo.png" alt="LiveKit" className="h-9" />
+                  </a>
+                  <a href="https://www.cerebrium.ai/" target="_blank" rel="noopener noreferrer">
+                    <img src="/assets/cerebrium-logo.svg" alt="Cerebrium" className="h-12" />
+                  </a>
+                  <a href="https://cartesia.ai/" target="_blank" rel="noopener noreferrer">
+                    <img src="/assets/cartesia-logo.svg" alt="Cartesia" className="h-6" />
+                  </a>
+                </div>
+              </div>
               <h2 className="text-3xl font-bold text-center mb-12">Project Overview</h2>
               <div className="space-y-8">
                 <p className="text-gray-600 text-lg">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                Experience the future of live narration with our AI commentator, capable of delivering dynamic, real-time commentary for sports, movie trailers, and more. Using cutting-edge AI models, it reacts instantly to events, bringing the excitement of live broadcasting to any scenario at Scale!
                 </p>
                 <p className="text-gray-600 text-lg">
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                Built with LiveKit for real-time video, Cerebrium for scalable AI infrastructure, and Cartesia for expressive voice synthesis, this system delivers fluid, emotion-rich commentary without human intervention.
                 </p>
               </div>
             </div>
