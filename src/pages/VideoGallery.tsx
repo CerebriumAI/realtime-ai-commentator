@@ -12,22 +12,16 @@ import {
 const videos = [
   {
     id: 1,
-    title: "Big Buck Bunny",
+    title: "Big Buck Bunny Trailer",
     url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+    thumbnail: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
   },
   {
     id: 2,
-    title: "Elephant Dream",
-    url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    thumbnail: "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+    title: "Warriors vs Mavericks",
+    url: "https://cerebrium-assets.s3.eu-west-1.amazonaws.com/basketball-game.mp4",
+    thumbnail: "https://cerebrium-assets.s3.eu-west-1.amazonaws.com/basketball-thumbnail.png"
   },
-  {
-    id: 3,
-    title: "Sintel",
-    url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-    thumbnail: "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-  }
 ];
 
 const VideoGallery = () => {

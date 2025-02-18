@@ -14,7 +14,7 @@ const LandingPage = () => {
               <p className="text-xl mb-8">See how a model can comment on videos in realtime with emotion</p>
               <Link
                 to="/videos"
-                state={{ roomName: 'demo-room' }}
+                state={{ roomName: `room-${Math.random().toString(36).substring(2, 10)}` }}
                 className="inline-flex items-center px-6 py-3 bg-white text-[#EB3A6F] rounded-full font-semibold hover:bg-opacity-90 transition-colors"
               >
                 <Play className="w-5 h-5 mr-2" />
