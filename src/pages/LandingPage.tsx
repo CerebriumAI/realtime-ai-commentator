@@ -64,7 +64,7 @@ const LandingPage = () => {
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a
-                href="https://github.com/yourusername/yourproject"
+                href="https://github.com/CerebriumAI/examples/tree/master/8-application-demos/3-ai-commentator/realtime-video-explainer"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center text-gray-400 hover:text-white transition-colors"
