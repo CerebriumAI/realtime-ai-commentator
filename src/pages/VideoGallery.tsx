@@ -27,6 +27,7 @@ const videos = [
 const VideoGallery = () => {
   const [selectedVideo, setSelectedVideo] = useState(videos[0]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const roomRef = useRef<Room | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioElements = useRef<HTMLAudioElement[]>([]);
@@ -35,6 +36,16 @@ const VideoGallery = () => {
     `${selectedVideo.id === 1 ? 'movie' : 'basketball'}-${Math.random().toString(36).substring(2, 10)}`
   );
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (roomName) {
@@ -62,6 +73,7 @@ const VideoGallery = () => {
       videoCaptureDefaults: {
         resolution: VideoPresets.h720.resolution,
       },
+      reconnect: true,
       maxRetries: 3,
     });
 
@@ -135,28 +147,8 @@ const VideoGallery = () => {
         try {
 
           toggleAudio(true);
-          
-          // Add detailed video element debugging
-          console.log('Video element state:', {
-            readyState: videoRef.current.readyState,
-            error: videoRef.current.error,
-            networkState: videoRef.current.networkState,
-            paused: videoRef.current.paused,
-            currentSrc: videoRef.current.currentSrc,
-            videoWidth: videoRef.current.videoWidth,
-            videoHeight: videoRef.current.videoHeight
-          });
 
-          // Check if capture methods exist
-          console.log('Capture methods:', {
-            captureStream: !!videoRef.current.captureStream,
-            webkitCaptureStream: !!videoRef.current.webkitCaptureStream
-          });
-
-          const mediaStream = videoRef.current.captureStream 
-          ? videoRef.current.captureStream()
-          : videoRef.current.webkitCaptureStream();
-          console.log(mediaStream);
+          const mediaStream = videoRef.current.captureStream();
           const videoTrack = mediaStream.getVideoTracks()[0];
           const audioTrack = mediaStream.getAudioTracks()[0];
           // Store published tracks for cleanup
@@ -194,9 +186,7 @@ const VideoGallery = () => {
             if (publication.track?.kind === 'audio') {
               toggleAudio(false);
             }
-            if (publication.track) {
-              await roomRef.current.localParticipant.unpublishTrack(publication.track);
-            }
+            await roomRef.current.localParticipant.unpublishTrack(publication.track);
           } catch (error) {
             console.warn('Error unpublishing track:', error);
           }
@@ -212,9 +202,7 @@ const VideoGallery = () => {
     // Cleanup published tracks
     if (roomRef.current) {
       for (const publication of publishedTracksRef.current) {
-        if (publication.track) {
-          await roomRef.current.localParticipant.unpublishTrack(publication.track);
-        }
+        await roomRef.current.localParticipant.unpublishTrack(publication);
       }
       publishedTracksRef.current = [];
     }
@@ -246,6 +234,11 @@ const VideoGallery = () => {
 
         {/* Main Video Player */}
         <div className="max-w-4xl mx-auto">
+          {isMobile && (
+            <div className="bg-yellow-600 text-white p-4 rounded-lg mb-4 text-sm">
+              ⚠️ This experience isn't compatible with mobile devices.
+            </div>
+          )}
           <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden mb-8">
           <video
             ref={videoRef}
