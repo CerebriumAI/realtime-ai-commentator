@@ -62,7 +62,6 @@ const VideoGallery = () => {
       videoCaptureDefaults: {
         resolution: VideoPresets.h720.resolution,
       },
-      reconnect: true,
       maxRetries: 3,
     });
 
@@ -136,7 +135,24 @@ const VideoGallery = () => {
         try {
 
           toggleAudio(true);
-          console.log(videoRef.current);
+          
+          // Add detailed video element debugging
+          console.log('Video element state:', {
+            readyState: videoRef.current.readyState,
+            error: videoRef.current.error,
+            networkState: videoRef.current.networkState,
+            paused: videoRef.current.paused,
+            currentSrc: videoRef.current.currentSrc,
+            videoWidth: videoRef.current.videoWidth,
+            videoHeight: videoRef.current.videoHeight
+          });
+
+          // Check if capture methods exist
+          console.log('Capture methods:', {
+            captureStream: !!videoRef.current.captureStream,
+            webkitCaptureStream: !!videoRef.current.webkitCaptureStream
+          });
+
           const mediaStream = videoRef.current.captureStream 
           ? videoRef.current.captureStream()
           : videoRef.current.webkitCaptureStream();
@@ -178,7 +194,9 @@ const VideoGallery = () => {
             if (publication.track?.kind === 'audio') {
               toggleAudio(false);
             }
-            await roomRef.current.localParticipant.unpublishTrack(publication.track);
+            if (publication.track) {
+              await roomRef.current.localParticipant.unpublishTrack(publication.track);
+            }
           } catch (error) {
             console.warn('Error unpublishing track:', error);
           }
@@ -194,7 +212,9 @@ const VideoGallery = () => {
     // Cleanup published tracks
     if (roomRef.current) {
       for (const publication of publishedTracksRef.current) {
-        await roomRef.current.localParticipant.unpublishTrack(publication);
+        if (publication.track) {
+          await roomRef.current.localParticipant.unpublishTrack(publication.track);
+        }
       }
       publishedTracksRef.current = [];
     }
