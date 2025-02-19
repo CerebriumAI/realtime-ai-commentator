@@ -9,17 +9,11 @@ import {
   LocalTrackPublication,
 } from 'livekit-client';
 
-declare global {
-  interface HTMLVideoElement {
-    captureStream(frameRate?: number): MediaStream;
-  }
-}
-
 const videos = [
   {
     id: 1,
     title: "Big Buck Bunny Trailer",
-    url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     thumbnail: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
   },
   {
@@ -37,7 +31,6 @@ const VideoGallery = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioElements = useRef<HTMLAudioElement[]>([]);
   const publishedTracksRef = useRef<LocalTrackPublication[]>([]);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [roomName, setRoomName] = useState(() => 
     `${selectedVideo.id === 1 ? 'movie' : 'basketball'}-${Math.random().toString(36).substring(2, 10)}`
   );
@@ -141,14 +134,10 @@ const VideoGallery = () => {
     if (roomRef.current) {
       if (isPlaying && videoRef.current) {
         try {
+
           toggleAudio(true);
 
-          // Create a new MediaStream from the video element
-          const mediaStream = new MediaStream([
-            ...videoRef.current.srcObject?.getVideoTracks() || [],
-            ...videoRef.current.srcObject?.getAudioTracks() || []
-          ]);
-
+          const mediaStream = videoRef.current.captureStream();
           const videoTrack = mediaStream.getVideoTracks()[0];
           const audioTrack = mediaStream.getAudioTracks()[0];
           // Store published tracks for cleanup
