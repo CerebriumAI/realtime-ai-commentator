@@ -73,7 +73,7 @@ const LandingPage = () => {
                 Source Code
               </a>
               <a
-                href="https://yourblog.com/post"
+                href="https://www.cerebrium.ai/blog/creating-a-realtime-ai-commentator-with-cerebrium-livekit-and-cartesia"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center text-gray-400 hover:text-white transition-colors"
