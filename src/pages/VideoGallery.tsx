@@ -9,6 +9,12 @@ import {
   LocalTrackPublication,
 } from 'livekit-client';
 
+declare global {
+  interface HTMLVideoElement {
+    captureStream(frameRate?: number): MediaStream;
+  }
+}
+
 const videos = [
   {
     id: 1,
@@ -31,6 +37,7 @@ const VideoGallery = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioElements = useRef<HTMLAudioElement[]>([]);
   const publishedTracksRef = useRef<LocalTrackPublication[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [roomName, setRoomName] = useState(() => 
     `${selectedVideo.id === 1 ? 'movie' : 'basketball'}-${Math.random().toString(36).substring(2, 10)}`
   );
@@ -134,10 +141,14 @@ const VideoGallery = () => {
     if (roomRef.current) {
       if (isPlaying && videoRef.current) {
         try {
-
           toggleAudio(true);
 
-          const mediaStream = videoRef.current.captureStream();
+          // Create a new MediaStream from the video element
+          const mediaStream = new MediaStream([
+            ...videoRef.current.srcObject?.getVideoTracks() || [],
+            ...videoRef.current.srcObject?.getAudioTracks() || []
+          ]);
+
           const videoTrack = mediaStream.getVideoTracks()[0];
           const audioTrack = mediaStream.getAudioTracks()[0];
           // Store published tracks for cleanup
@@ -235,11 +246,6 @@ const VideoGallery = () => {
             onPlay={() => handleVideoPlayPause(true)}
             onPause={() => handleVideoPlayPause(false)}
             onEnded={handleVideoEnd}
-            onTouchStart={() => {
-              // Optionally handle touch start
-              handleVideoPlayPause(true)
-              console.log('Video touched');
-            }}
             crossOrigin="anonymous"
           >
             <source src={selectedVideo.url} type="video/mp4" />
