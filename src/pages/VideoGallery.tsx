@@ -136,10 +136,11 @@ const VideoGallery = () => {
         try {
 
           toggleAudio(true);
-
-          const mediaStream = videoRef.current.webkitCaptureStream 
-          ? videoRef.current.webkitCaptureStream()
-          : videoRef.current.captureStream();
+          console.log(videoRef.current);
+          const mediaStream = videoRef.current.captureStream 
+          ? videoRef.current.captureStream()
+          : videoRef.current.webkitCaptureStream();
+          console.log(mediaStream);
           const videoTrack = mediaStream.getVideoTracks()[0];
           const audioTrack = mediaStream.getAudioTracks()[0];
           // Store published tracks for cleanup
