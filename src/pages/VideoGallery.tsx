@@ -229,12 +229,18 @@ const VideoGallery = () => {
             key={selectedVideo.url}
             controls
             muted
+            playsInline
             className="w-full h-full object-contain"
             poster={selectedVideo.thumbnail}
             onPlay={() => handleVideoPlayPause(true)}
             onPause={() => handleVideoPlayPause(false)}
             onEnded={handleVideoEnd}
-            crossOrigin="anonymous"  // Add this line
+            onTouchStart={() => {
+              // Optionally handle touch start
+              handleVideoPlayPause(true)
+              console.log('Video touched');
+            }}
+            crossOrigin="anonymous"
           >
             <source src={selectedVideo.url} type="video/mp4" />
             Your browser does not support the video tag.
